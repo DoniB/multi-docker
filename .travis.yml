@@ -1,0 +1,15 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t doni/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run doni/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t doni/multi-client ./client
+  - docker build -t doni/multi-nginx ./nginx
+  - docker build -t doni/multi-server ./server
+  - docker build -t doni/multi-worker ./worker
